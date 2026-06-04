@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eZRx Pro - Marketplace Order Catalog</title>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --zp-blue: #0A3A60;
+            --zp-teal: #00A896;
+            --zp-light-bg: #F4F7F9;
+            --zp-dark-text: #2D3748;
+            --zp-border: #E2E8F0;
+            --zp-success: #48BB78;
+            --zp-warning: #ECC94B;
+            --zp-danger: #F56565;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--zp-light-bg); color: var(--zp-dark-text); display: flex; flex-direction: column; min-height: 100vh; }
+
+        header {
+            background-color: var(--zp-blue);
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .logo-area h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+        .logo-area span { color: var(--zp-teal); }
+
+        .identity-card { background: rgba(255,255,255,0.08); padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.85rem; border-left: 3px solid var(--zp-teal); }
+
+        .container { max-width: 1400px; width: 100%; margin: 1.5rem auto; padding: 0 1rem; flex: 1; display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; }
+
+        .card { background: white; border-radius: 8px; border: 1px solid var(--zp-border); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card-title { font-size: 1.15rem; color: var(--zp-blue); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--zp-light-bg); padding-bottom: 0.6rem; font-weight: 600; }
+
+        .category-header { background: var(--zp-light-bg); padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; color: var(--zp-blue); border-radius: 4px; margin: 1rem 0; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.2rem; }
+        .product-card { border: 1px solid var(--zp-border); border-radius: 8px; padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between; background: #FFF; }
+        
+        .tag { font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; display: inline-block; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .tag-otc { background: #E6FFFA; color: #319795; }
+        .tag-rx { background: #EBF8FF; color: #2B6CB0; }
+        .tag-nutrition { background: #EDF2F7; color: #4A5568; }
+        
+        .rule-badge { background: #FFF5F5; color: #C53030; font-size: 0.75rem; padding: 0.4rem; border-radius: 6px; margin-top: 0.5rem; font-weight: 500; border-left: 3px solid #E53E3E; display: flex; align-items: center; gap: 4px; }
+        .cold-chain-badge { background: #EBF8FF; color: #2B6CB0; border-left-color: #3182CE; }
+
+        .btn { background-color: var(--zp-blue); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 4px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; transition: background 0.2s; }
+        .btn:hover { background-color: #114B7A; }
+        .btn-teal { background-color: var(--zp-teal); }
+        .btn-teal:hover { background-color: #008F80; }
+        .qty-input { width: 55px; text-align: center; padding: 0.35rem; border: 1px solid var(--zp-border); border-radius: 4px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1>eZRx<span>Pro</span></h1>
+        </div>
+        <div class="identity-card">
+            <div style="font-weight: 700; color: white;"><i data-lucide="store" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Watsons Paragon (SG_WATS_089)</div>
+            <span style="font-size:0.75rem; color:#A0AEC0;">Authenticated Session: Vault CRM Link</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <div class="card">
+                <div class="card-title"><i data-lucide="package"></i> Order Catalog</div>
+                
+                <div class="category-header">Consumer Healthcare (OTC)</div>
+                <div class="product-grid" id="otc-grid-target"></div>
+
+                <div class="category-header">Prescription & Specialty Pharmaceuticals</div>
+                <div class="product-grid" id="rx-grid-target"></div>
+
+                <div class="category-header">Specialty Nutrition & Probiotics</div>
+                <div class="product-grid" id="nutrition-grid-target"></div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="card" style="position: sticky; top: 20px;">
+                <div class="card-title"><i data-lucide="shopping-cart"></i> Cart Summary</div>
+                <div style="font-size: 0.8rem; color:#718096; margin-bottom: 1.2rem;">Account: <strong>Watsons Paragon</strong></div>
+                
+                <div id="cart-lines-container">
+                    <p style="color:#A0AEC0; font-size:0.85rem; text-align:center; padding:2rem 0;">No items added to current session.</p>
+                </div>
+
+                <div id="cart-summary-block" style="display:none; border-top: 2px dashed var(--zp-border); margin-top: 1.2rem; padding-top: 1.2rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:0.5rem; color:#4A5568;">
+                        <span>Gross Subtotal:</span>
+                        <span id="gross-total-display">$0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:0.5rem; color:var(--zp-danger); font-weight: 500;">
+                        <span>eZRx Rules & Rebates:</span>
+                        <span id="rebate-deduction-display">-$0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:0.8rem; color:var(--zp-blue); font-weight: 500;">
+                        <span>Cold-Chain Surcharge:</span>
+                        <span id="surcharge-display">$0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:700; color:var(--zp-blue); margin-bottom: 1.2rem;">
+                        <span>Net Valuation:</span>
+                        <span id="net-total-display">$0.00</span>
+                    </div>
+                    <button class="btn btn-teal" style="width: 100%; justify-content: center; padding: 0.75rem;" onclick="submitOrderToERP()">
+                        <i data-lucide="check-circle"></i> Submit Order Package
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const productMasterData = [
+            { id: 'OTC-ZAM', name: 'Zam-Buk® Antiseptic Ointment', cat: 'otc', spec: 'Box of 12 Tins', cost: 14.50, rule: 'Standard Pricing' },
+            { id: 'OTC-VAP', name: 'Vapex® Decongestant Inhaler', cat: 'otc', spec: 'Pack of 20', cost: 32.00, rule: 'Standard Pricing' },
+            { id: 'OTC-FRN', name: 'FERN-C Vitamin C Range', cat: 'otc', spec: '100 Capsules/Box', cost: 24.00, rule: 'MoQ Bundle: 15% discount for orders ≥15 boxes.' },
+            { id: 'OTC-KAM', name: 'Kamillosan M Mouth Spray', cat: 'otc', spec: '15ml Spray Bottle', cost: 18.50, rule: 'Standard Pricing' },
+            { id: 'OTC-DER', name: 'Dermatix Ultra Silicone Gel', cat: 'otc', spec: '15g Tube', cost: 45.00, rule: 'Cross-Portfolio Bundle Eligible' },
+            { id: 'OTC-FST', name: 'Fastum Gel Topical Anti-Inflammatory', cat: 'otc', spec: '50g Tube', cost: 22.00, rule: 'Z-Bundle: Mix with Dermatix Ultra for 10% combo rebate.' },
+            { id: 'RX-ALI', name: 'Alimta® Pemetrexed Chemotherapy', cat: 'rx', spec: '100mg Injection Vial', cost: 820.00, rule: 'Specialty cold chain tracking required.', coldChain: true },
+            { id: 'RX-DER', name: 'Dermovate Topical Steroid Cream', cat: 'rx', spec: '30g Tube', cost: 19.00, rule: 'Prescription Item' },
+            { id: 'RX-BIL', name: 'Bilaxten Bilastine Antihistamine', cat: 'rx', spec: 'Box of 30 Tablets', cost: 38.00, rule: 'Contract Price: Falls to $31.50 for orders ≥10 packs.' },
+            { id: 'RX-DUS', name: 'Duspatalin Retard IBS Relief', cat: 'rx', spec: 'Box of 60 Caps', cost: 52.00, rule: 'Prescription Item' },
+            { id: 'NUT-OMN', name: 'OMNi-BiOTiC® Probiotic Supp.', cat: 'nutrition', spec: 'Box of 30 Sachets', cost: 68.00, rule: 'Premium Probiotic Terms' },
+            { id: 'NUT-OIL', name: 'Oilatum Emollient Skincare Cream', cat: 'nutrition', spec: '500ml Pump Bottle', cost: 34.50, rule: 'Dermatology Portfolio Array' }
+        ];
+
+        let internalCart = {};
+
+        window.onload = function() {
+            buildCatalogInterfaces();
+            lucide.createIcons();
+        };
+
+        function buildCatalogInterfaces() {
+            const otcTarget = document.getElementById('otc-grid-target');
+            const rxTarget = document.getElementById('rx-grid-target');
+            const nutTarget = document.getElementById('nutrition-grid-target');
+
+            productMasterData.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                let categoryBadgeClass = 'tag-otc';
+                if(prod.cat === 'rx') categoryBadgeClass = 'tag-rx';
+                if(prod.cat === 'nutrition') categoryBadgeClass = 'tag-nutrition';
+
+                card.innerHTML = `
+                    <div>
+                        <span class="tag ${categoryBadgeClass}">${prod.cat}</span>
+                        <h4 style="color:var(--zp-blue); font-size:0.95rem; font-weight:700; margin-bottom:0.15rem;">${prod.name}</h4>
+                        <p style="font-size:0.75rem; color:#718096; margin-bottom:0.5rem;">Specification: ${prod.spec}</p>
+                        <div style="font-size:1.15rem; font-weight:700; color:var(--zp-dark-text); margin-bottom:0.4rem;">$${prod.cost.toFixed(2)}</div>
+                        <div class="rule-badge ${prod.coldChain ? 'cold-chain-badge' : ''}">
+                            <i data-lucide="${prod.coldChain ? 'thermometer-snowflake' : 'percent'}" style="width:12px; height:12px;"></i>
+                            <span>${prod.rule}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; margin-top:1.2rem;">
+                        <input type="number" id="input-qty-${prod.id}" class="qty-input" value="1" min="1">
+                        <button class="btn btn-sm btn-teal" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="addItemToCart('${prod.id}')">Add</button>
+                    </div>
+                `;
+
+                if(prod.cat === 'otc') otcTarget.appendChild(card);
+                if(prod.cat === 'rx') rxTarget.appendChild(card);
+                if(prod.cat === 'nutrition') nutTarget.appendChild(card);
+            });
+        }
+
+        function addItemToCart(id) {
+            const qtyField = document.getElementById(`input-qty-${id}`);
+            const qtyVal = parseInt(qtyField.value) || 1;
+            internalCart[id] = (internalCart[id] || 0) + qtyVal;
+            recalculateTotals();
+        }
+
+        function dropCartItem(id) {
+            delete internalCart[id];
+            recalculateTotals();
+        }
+
+        function recalculateTotals() {
+            const container = document.getElementById('cart-lines-container');
+            const summary = document.getElementById('cart-summary-block');
+
+            if(Object.keys(internalCart).length === 0) {
+                container.innerHTML = `<p style="color:#A0AEC0; font-size:0.85rem; text-align:center; padding:2rem 0;">No items added to current session.</p>`;
+                summary.style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = '';
+            summary.style.display = 'block';
+
+            let cumulativeGross = 0;
+            let cumulativeNet = 0;
+            let cumulativeSurcharge = 0;
+
+            const zBundleActive = !!internalCart['OTC-FST'] && !!internalCart['OTC-DER'];
+
+            Object.keys(internalCart).forEach(id => {
+                const prod = productMasterData.find(item => item.id === id);
+                const qty = internalCart[id];
+
+                let itemPrice = prod.cost;
+                if (id === 'RX-BIL' && qty >= 10) itemPrice = 31.50;
+                if (id === 'OTC-FRN' && qty >= 15) itemPrice = prod.cost * 0.85;
+                if ((id === 'OTC-FST' || id === 'OTC-DER') && zBundleActive) itemPrice = itemPrice * 0.90;
+                if (prod.coldChain) cumulativeSurcharge += 150.00;
+
+                cumulativeGross += qty * prod.cost;
+                cumulativeNet += qty * itemPrice;
+
+                const lineRow = document.createElement('div');
+                lineRow.style.cssText = "font-size:0.85rem; padding:0.5rem 0; border-bottom:1px solid var(--zp-border); display:flex; justify-content:space-between; align-items:center;";
+                lineRow.innerHTML = `
+                    <div>
+                        <strong>${prod.name}</strong><br>
+                        <small style="color:#718096;">Qty: ${qty} × $${prod.cost.toFixed(2)}</small>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-weight:600;">$${(qty * itemPrice).toFixed(2)}</span><br>
+                        <span style="font-size:0.7rem; color:var(--zp-danger); cursor:pointer;" onclick="dropCartItem('${id}')">Remove</span>
+                    </div>
+                `;
+                container.appendChild(lineRow);
+            });
+
+            document.getElementById('gross-total-display').innerText = `$${cumulativeGross.toFixed(2)}`;
+            document.getElementById('rebate-deduction-display').innerText = `-$${(cumulativeGross - cumulativeNet).toFixed(2)}`;
+            document.getElementById('surcharge-display').innerText = `$${cumulativeSurcharge.toFixed(2)}`;
+            document.getElementById('net-total-display').innerText = `$${(cumulativeNet + cumulativeSurcharge).toFixed(2)}`;
+        }
+
+        function submitOrderToERP() {
+            alert("Order packet transmitted directly to Zuellig core ERP network. Vault CRM activity stream synced.");
+            internalCart = {};
+            recalculateTotals();
+        }
+    </script>
+</body>
+</html>

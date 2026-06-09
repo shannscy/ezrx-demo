@@ -66,7 +66,7 @@
             <h1>eZRx<span>Pro</span></h1>
         </div>
         <div class="identity-card">
-            <div style="font-weight: 700; color: white;"><i data-lucide="store" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Watsons Paragon (SG_WATS_089)</div>
+            <div style="font-weight: 700; color: white;"><i data-lucide="store" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> National Heart Centre Singapore Pharmacy (SG_NHCS_001)</div>
             <span style="font-size:0.75rem; color:#A0AEC0;">Authenticated Session: Vault CRM Link</span>
         </div>
     </header>
@@ -90,7 +90,7 @@
         <aside>
             <div class="card" style="position: sticky; top: 20px;">
                 <div class="card-title"><i data-lucide="shopping-cart"></i> Cart Summary</div>
-                <div style="font-size: 0.8rem; color:#718096; margin-bottom: 1.2rem;">Account: <strong>Watsons Paragon</strong></div>
+                <div style="font-size: 0.8rem; color:#718096; margin-bottom: 1.2rem;">Account: <strong>National Heart Centre Singapore Pharmacy</strong></div>
                 
                 <div id="cart-lines-container">
                     <p style="color:#A0AEC0; font-size:0.85rem; text-align:center; padding:2rem 0;">No items added to current session.</p>
@@ -129,6 +129,7 @@
             { id: 'OTC-KAM', name: 'Kamillosan M Mouth Spray', cat: 'otc', spec: '15ml Spray Bottle', cost: 18.50, rule: 'Standard Pricing' },
             { id: 'OTC-DER', name: 'Dermatix Ultra Silicone Gel', cat: 'otc', spec: '15g Tube', cost: 45.00, rule: 'Cross-Portfolio Bundle Eligible' },
             { id: 'OTC-FST', name: 'Fastum Gel Topical Anti-Inflammatory', cat: 'otc', spec: '50g Tube', cost: 22.00, rule: 'Z-Bundle: Mix with Dermatix Ultra for 10% combo rebate.' },
+            { id: 'RX-CHO', name: 'Cholecap® (Cholecalciferol / Calcium)', cat: 'rx', spec: 'Box of 60 Tablets', cost: 42.00, rule: 'Institution Special: 10% discount for orders ≥12 packs.' },
             { id: 'RX-ALI', name: 'Alimta® Pemetrexed Chemotherapy', cat: 'rx', spec: '100mg Injection Vial', cost: 820.00, rule: 'Specialty cold chain tracking required.', coldChain: true },
             { id: 'RX-DER', name: 'Dermovate Topical Steroid Cream', cat: 'rx', spec: '30g Tube', cost: 19.00, rule: 'Prescription Item' },
             { id: 'RX-BIL', name: 'Bilaxten Bilastine Antihistamine', cat: 'rx', spec: 'Box of 30 Tablets', cost: 38.00, rule: 'Contract Price: Falls to $31.50 for orders ≥10 packs.' },
@@ -217,6 +218,7 @@
 
                 let itemPrice = prod.cost;
                 if (id === 'RX-BIL' && qty >= 10) itemPrice = 31.50;
+                if (id === 'RX-CHO' && qty >= 12) itemPrice = prod.cost * 0.90; // 10% off for Cholecap bulk
                 if (id === 'OTC-FRN' && qty >= 15) itemPrice = prod.cost * 0.85;
                 if ((id === 'OTC-FST' || id === 'OTC-DER') && zBundleActive) itemPrice = itemPrice * 0.90;
                 if (prod.coldChain) cumulativeSurcharge += 150.00;
